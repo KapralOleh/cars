@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html ng-app="carCatalog">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body ng-controller="StoreController">
+	<div class="input" ng-show="true">
+	<h2>Search car?</h2>
+	<input type="text" ng-model="query"><br>
+	Кількість машин: {{products.length}}
+	<h2>Add car:</h2>
+	<form name="addForm" ng-controller="AddController" ng-submit="addForm.$valid && addCar()" novalidate>
+		<div >
+		
+		Brand:{{brand}}<br>
+		Model:{{model}}
+		</div>
+		<label>Car brand:</label><br>
+		<input type="text" ng-model="brand" required placeholder="Lexus"><br>
+		<label>Car model:</label><br>
+		<input type="text" ng-model="model" required placeholder="LFA"><br>
+		<input type="submit" value="Submit">
+	</form>
+	</div>
+	 
+	<div  id="container" ng-repeat="product in products| filter : query">
+		<!--Name of a car -->
+		<h1><span class = "gold">{{product.brand}}</span> <em class="right"> {{product.model}}</em></h1>
+		<!--Gallery-->
+		<div ng-show="product.images.length">
+			
+			<ul class="tabs">
+	          	<li class="thumbnail" ng-repeat="image in product.images">
+	            	<img ng-src="{{image}}">
+	          	</li>
+	        </ul>
+		</div>
+		<!-- Description about car and other things about car-->
+		<section ng-controller="PanelController">
+			<ul class="tabs">
+        		<li ng-class="{active:isSelected(1)}"class="thumbnail">
+        			<a href ng-click="selectTab(1)">Description</a></li>
+        		<li ng-class="{active:isSelected(2)}"class="thumbnail">
+        			<a href ng-click="selectTab(2)">Specificetion</a></li>
+        		<li ng-class="{active:isSelected(3)}"class="thumbnail">
+        			<a href ng-click="selectTab(3)">Reviews</a></li>
+        	</ul>
+        	<div ng-show="isSelected(1)">
+				<h4>Description</h4>
+				<blockquote>{{product.description}}</blockquote>
+			</div>
+			<div ng-show="isSelected(2)">
+				<h4>Specification</h4>
+				<blockquote>{{product.specification}}</blockquote>
+			</div>
+			<div ng-show="isSelected(3)">
+				<h4>Reviews</h4>
+				<blockquote ng-repeat="review in product.reviews">
+					<b>Stars: {{review.stars}}</b><br>
+					{{review.body}}<br>
+					<cite>By:{{review.author}} On: {{review.createdOn | date}}</cite>
+				</blockquote>
+				<form name="reviewForm" ng-controller="ReviewController" ng-submit="reviewForm.$valid && addReview(product)" novalidate>
+					<blockquote >
+						<b>{{review.stars}}</b><br>
+						{{review.body}}<br>
+						<cite>{{review.author}}</cite>
+					</blockquote>
+					<select  ng-model="review.stars" required>
+						<option value="1">1 star</option>
+						<option value="2">2 stars</option>
+						<option value="3">3 stars</option>
+						<option value="4">4 stars</option>
+						<option value="5">5 stars</option>
+					</select><br>
+					<textarea ng-model="review.body" placeholder="short review" required></textarea><br>
+					<label>by:</label><br>
+					<input type="text" ng-model="review.author" placeholder="Your name" required>
+					
+					<input type="submit" value="Submit">
+				</form>
+			</div>
+		</section>
+	</div>
+	<script type="text/javascript" src="angular.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>	
+</body>
+</html>
